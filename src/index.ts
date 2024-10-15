@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { customerService } from './sequences';
+import { customerService } from './sequences/customerService';
 
 config();
 
@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.post('/customer-service', async (req, res) => {
   try {
-    const result = await customerServiceFlow(req.body);
+    const result = await customerService.invoke(req.body);
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred' });
