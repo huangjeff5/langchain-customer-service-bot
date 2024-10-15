@@ -26,7 +26,7 @@ export async function getOrderById(id: string) {
 	if (!docSnap.exists) return null;
 
 	const orderData = { id: docSnap.id, ...docSnap.data() } as any;
-	let customer = null;
+	let customer: { id: string; [key: string]: any } | null = null;
 
 	// Check if customerRef is a string (ID) or a reference
 	if (typeof orderData.customerRef === 'string') {
