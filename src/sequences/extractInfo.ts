@@ -6,7 +6,7 @@ import { extractInfoPrompt } from '../prompts';
 
 const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo" });
 
-export const extractInfoFlow = async (input: { inquiry: string }) => {
+export const extractInfo = async (input: { inquiry: string }) => {
   const chain = RunnableSequence.from([
     PromptTemplate.fromTemplate(`
 Extract the following information from the customer inquiry:

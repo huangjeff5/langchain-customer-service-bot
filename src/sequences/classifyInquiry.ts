@@ -19,12 +19,11 @@ const parseResult = (text: string) => {
   return { intent, subintent };
 };
 
-export const classifyInquiryFlow = RunnableSequence.from([
+export const classifyInquiry = RunnableSequence.from([
   classifyInquiryPrompt,
   model,
   new StringOutputParser(),
   parseResult
 ]);
-
 // Usage remains similar:
 // const result = await classifyInquiryFlow.invoke({ inquiry: "Your inquiry here" });

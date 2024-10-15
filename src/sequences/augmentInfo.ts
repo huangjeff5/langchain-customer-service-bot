@@ -1,5 +1,5 @@
 import { getCustomerByEmail, getOrderById, getProductById, getRecentOrdersByEmail, listProducts } from '../firestoreDb';
-import { extractInfoFlow } from './extractInfo';
+import { extractInfo } from './extractInfo';
 
 export const augmentInfo = async (intent: string, customerInquiry: string, email: string) => {
   let responseData = {};
@@ -9,7 +9,7 @@ export const augmentInfo = async (intent: string, customerInquiry: string, email
       responseData = { catalog: products };
       break;
     case 'Product':
-      const productInfo = await extractInfoFlow({ inquiry: customerInquiry });
+      const productInfo = await extractInfo({ inquiry: customerInquiry });
       if (productInfo.productId !== "") {
         const product = await getProductById(productInfo.productId);
         responseData = { product };
@@ -19,7 +19,7 @@ export const augmentInfo = async (intent: string, customerInquiry: string, email
       }
       break;
     case 'Order':
-      const orderInfo = await extractInfoFlow({ inquiry: customerInquiry });
+      const orderInfo = await extractInfo({ inquiry: customerInquiry });
       console.log('Extracted order info:', orderInfo);
       if (orderInfo.orderId !== "") {
         const order = await getOrderById(orderInfo.orderId);

@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { customerServiceFlow } from './customerServiceChains';
+import { customerService } from './sequences';
 
 config();
 
