@@ -2,7 +2,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { PromptTemplate } from "@langchain/core/prompts";
 
-const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo" });
+const model = new ChatOpenAI({ modelName: "gpt-4-turbo" });
 
 export const generateDraft = async (input: {
   intent: string;

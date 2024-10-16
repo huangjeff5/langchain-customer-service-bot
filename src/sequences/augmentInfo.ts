@@ -9,8 +9,8 @@ export const augmentInfo = async (intent: string, customerInquiry: string, email
       responseData = { catalog: products };
       break;
     case 'Product':
-      const productInfo = await extractInfo({ inquiry: customerInquiry });
-      if (productInfo.productId !== "") {
+      const productInfo = await extractInfo.invoke({ inquiry: customerInquiry });
+      if (!!productInfo.productId && productInfo.productId !== "") {
         const product = await getProductById(productInfo.productId);
         responseData = { product };
       } else {
@@ -19,9 +19,9 @@ export const augmentInfo = async (intent: string, customerInquiry: string, email
       }
       break;
     case 'Order':
-      const orderInfo = await extractInfo({ inquiry: customerInquiry });
+      const orderInfo = await extractInfo.invoke({ inquiry: customerInquiry });
       console.log('Extracted order info:', orderInfo);
-      if (orderInfo.orderId !== "") {
+      if (!!orderInfo.orderId && orderInfo.orderId !== "") {
         const order = await getOrderById(orderInfo.orderId);
         console.log('Retrieved order:', order);
         responseData = { order };

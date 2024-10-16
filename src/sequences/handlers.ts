@@ -28,8 +28,14 @@ const handlers: Record<string, HandlerFunction> = {};
 
 // Main function to execute a handler based on the given input
 export async function executeHandler(input: HandlerInput): Promise<z.infer<typeof HandlerResult>> {
-  const handlerKey = `${input.intent}_${input.subintent}`;
+  const handlerKey = `${input.intent.toLowerCase()}_${input.subintent.toLowerCase()}`;
   const handler = handlers[handlerKey];
+  console.log('Handler key:', handlerKey);
+  console.log('Available handler keys:', Object.keys(handlers));
+  console.log('Handler function:', !!handler ? 'Found' : 'Not found');
+  if (handler) {
+    console.log('Handler function details:', handler.toString().slice(0, 100) + '...');
+  }
 
   if (!handler) {
     throw new Error(`NoHandlerError: No handler found for intent '${input.intent}' and subintent '${input.subintent}'`);
@@ -47,8 +53,11 @@ export function registerHandler(intent: string, subintent: string, handler: Hand
 // Helper function to create a LangChain-based handler
 export function createLangChainHandler(promptTemplate: string): HandlerFunction {
   return async (input: HandlerInput) => {
+    console.log('Creating LangChain handler with input:', JSON.stringify(input, null, 2));
     const model = new ChatOpenAI({ temperature: 0.7 });
     const prompt = PromptTemplate.fromTemplate(promptTemplate);
+
+    console.log('Prompt template:', promptTemplate);
 
     const chain = RunnableSequence.from([
       {
@@ -60,15 +69,20 @@ export function createLangChainHandler(promptTemplate: string): HandlerFunction 
       (output) => JSON.parse(output.content),
     ]);
 
+    console.log('Invoking LangChain...', input);
     const output = await chain.invoke(input);
+    console.log('LangChain output:', JSON.stringify(output, null, 2));
 
-    return {
+    const result = {
       needsUserInput: output.needsUserInput || false,
       nextAction: output.nextAction,
       actionsTaken: output.actionsTaken || [],
       data: output.data || {},
       handlerCompleted: output.handlerCompleted || false,
     };
+
+    console.log('Handler result:', JSON.stringify(result, null, 2));
+    return result;
   };
 }
 
@@ -87,13 +101,13 @@ User inquiry: {inquiry}
 Context: {context}
 
 Respond in the following JSON format:
-{
+{{
   "needsUserInput": boolean,
   "nextAction": string,
   "actionsTaken": string[],
   "data": object,
   "handlerCompleted": boolean
-}
+}}
 `));
 
 // Handler for general product questions
@@ -111,13 +125,13 @@ User inquiry: {inquiry}
 Context: {context}
 
 Respond in the following JSON format:
-{
+{{
   "needsUserInput": boolean,
   "nextAction": string,
   "actionsTaken": string[],
   "data": object,
   "handlerCompleted": boolean
-}
+}}
 `));
 
 // Handler for product stock availability
@@ -136,11 +150,11 @@ User inquiry: {inquiry}
 Context: {context}
 
 Respond in the following JSON format:
-{
+{{
   "needsUserInput": boolean,
   "nextAction": string,
   "actionsTaken": string[],
   "data": object,
   "handlerCompleted": boolean
-}
+}}
 `));
